@@ -1,4 +1,5 @@
 ﻿
+Imports System.Configuration
 Imports System.Diagnostics
 Public Class frmMain
     Private batchProcess As Process
@@ -52,7 +53,40 @@ Public Class frmMain
     End Function
 
     Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        batchProcess.Kill()
+        Try
+            batchProcess.Kill()
+        Catch ex As Exception
 
+        End Try
+        Application.Exit()
+
+    End Sub
+
+    Private Sub btnLogin_Click(sender As Object, e As EventArgs) Handles btnLogin.Click
+        Dim username As String = ConfigurationManager.AppSettings("Username")
+        Dim password As String = ConfigurationManager.AppSettings("Password")
+
+        If username Is Nothing And password Is Nothing Then
+            Dim frmC As New frmCredentials
+            frmC.Show()
+        Else
+            Dim frmL As New frmLogin
+            If frmL.ShowDialog() <> DialogResult.OK Then
+                frmL.Hide()
+            Else
+                frmL.Hide()
+                Me.Hide()
+                Dim frmM As New frmMainForm
+                If frmM.ShowDialog() <> DialogResult.OK Then
+                    frmM.Hide()
+                    Me.Show()
+                Else
+                    frmM.Hide()
+                End If
+
+
+            End If
+
+        End If
     End Sub
 End Class
